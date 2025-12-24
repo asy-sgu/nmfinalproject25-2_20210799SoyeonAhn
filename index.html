@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>Room Project</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- 가짜 커서 -->
+  <div class="cursor" id="cursor"></div>
+
+  <!-- 첫 번째 화면 : 문 -->
+  <div id="door-screen" class="screen">
+    <div class="grid-container">
+      <div id="door-hitbox" class="grid-door clickable">
+        <img
+          id="door-image"
+          src="door01.svg"
+          alt="door"
+        />
+      </div>
+    </div>
+  </div>
+
+  <!-- 두 번째 화면 : 방(top-down) -->
+  <div id="room-screen" class="screen">
+    <div class="page-title">My Own Room</div>
+
+    <div class="room-wrapper">
+      <div class="room">
+        <!-- 방 배경 -->
+        <img
+          src="room.svg"
+          alt="room background"
+          class="room-bg"
+        />
+
+        <!-- 클릭 가능한 투명 영역들 -->
+        <div id="hit-desk"     class="hitbox hit-desk clickable"></div>
+        <div id="hit-bed"      class="hitbox hit-bed clickable"></div>
+        <div id="hit-window"   class="hitbox hit-window clickable"></div>
+        <div id="hit-mirror"   class="hitbox hit-mirror clickable"></div>
+        <div id="hit-books"    class="hitbox hit-books clickable"></div>
+        <div id="hit-roomdoor" class="hitbox hit-roomdoor clickable"></div>
+
+        <!-- 방 전체를 어둡게 만드는 레이어 (침대 토글용) -->
+        <div id="room-dim-layer" class="room-dim"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 모달 오버레이 -->
+  <div id="overlay" class="overlay">
+    <div class="modal">
+      <button id="modal-close" class="modal-close">✕</button>
+      <div id="modal-body" class="modal-body"></div>
+    </div>
+  </div>
+
+  <!-- ===== 모달 템플릿들 ===== -->
+
+<!-- Bookshelf -->
+<div id="tpl-bookshelf" class="modal-template">
+  <div class="bookshelf-wrapper">
+    <h2 class="bookshelf-title">
+      Virginia Woolf, <em>A Room of One's Own</em>
+    </h2>
+
+    <div class="bookshelf-quotes">
+      <section class="bookshelf-quote">
+        <h3>1. 익명(Anon)은 아마도 여자였을 것이다</h3>
+        <p class="quote-en">
+          I would venture to guess that Anon, who wrote so many poems without signing them, was often a woman.
+        </p>
+        <p class="quote-ko">
+          익명(Anon)이라는 이름으로 이름 없이 시를 쓰던 이들 가운데 상당수는 사실 여성이었을 것이라고 감히 짐작해 본다.
+        </p>
+      </section>
+
+      <section class="bookshelf-quote">
+        <h3>2. “여성이 글을 쓰려면 돈과 방이 필요하다”</h3>
+        <p class="quote-en">
+          A woman must have money and a room of her own if she is to write fiction.
+        </p>
+        <p class="quote-ko">
+          여성이 소설을 쓰기 위해서는 돈과, 자기만의 방이 반드시 필요하다.
+        </p>
+      </section>
+
+      <section class="bookshelf-quote">
+        <h3>3. “자기 자신에 대한 신뢰가 필요하다”</h3>
+        <p class="quote-en">
+          Life for both sexes … is arduous, difficult, a perpetual struggle. … More than anything, perhaps … it calls for confidence in oneself.
+        </p>
+        <p class="quote-ko">
+          남녀 모두의 삶은 고되고, 어렵고, 끝없는 싸움이다. 그 무엇보다도, 어쩌면 가장 절실하게 요구되는 것은 자기 자신에 대한 신뢰다.
+        </p>
+      </section>
+
+      <section class="bookshelf-quote">
+        <h3>4. “500파운드가 가져온 변화”</h3>
+        <p class="quote-en">
+          No force in the world can take from me my five hundred pounds. Food, house and clothing are mine forever. Therefore not merely do effort and labour cease, but also hatred and bitterness. I need not hate any man; he cannot hurt me.
+        </p>
+        <p class="quote-ko">
+          세상의 어떤 힘도 내게 해마다 주어지는 500파운드를 빼앗을 수 없다. 먹을 것과 집과 옷은 영원히 내 것이다. 그러므로 수고와 노동만이 아니라, 미움과 원한까지도 사라진다. 나는 어떤 남자를 미워할 필요가 없다. 그는 더 이상 나를 해칠 수 없기 때문이다.
+        </p>
+      </section>
+
+      <section class="bookshelf-quote">
+        <h3>5. “마음 전체가 활짝 열려 있어야 한다”</h3>
+        <p class="quote-en">
+          The mind must be wide open; it must have freedom, and it must have peace; no wheel must grate, no light flicker.
+        </p>
+        <p class="quote-ko">
+          마음 전체가 활짝 열려 있어야 합니다. 자유가 있어야 하고, 또 평화가 있어야 하지요. 바퀴가 삐걱거리거나 빛이 깜빡거려서도 안 됩니다.
+        </p>
+      </section>
+    </div>
+
+    <div class="bookshelf-buy">
+      <p class="bookshelf-buy-text">
+        이 책을 직접 읽어보고 싶다면 아래 버튼을 눌러 온라인 서점으로 이동할 수 있습니다.
+      </p>
+      <a
+        href="https://product.kyobobook.co.kr/detail/S000201447731"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="bookshelf-buy-button clickable"
+      >
+        교보문고에서 『자기만의 방』 살펴보기
+      </a>
+    </div>
+  </div>
+</div>
+
+
+  <!-- Desk -->
+  <div id="tpl-desk" class="modal-template">
+    <div class="desk-container">
+      <img src="desk_bg.svg" alt="Desk background" class="desk-bg" />
+
+      <!-- 키보드 클릭/hover용 투명 히트박스 -->
+      <div class="desk-keyboard-hitbox clickable"></div>
+
+      <!-- 키보드만 있는 SVG -->
+      <img
+        src="desk_keyboard.svg"
+        alt="Keyboard"
+        class="desk-keyboard-img"
+      />
+    </div>
+  </div>
+
+  <!-- 글쓰기 + 아카이브 -->
+  <div id="tpl-keyboard" class="modal-template">
+    <div class="kb-wrapper">
+      <p class="kb-sub">
+        여기에서 쓴 글은 이 브라우저에 저장되고, 아래 아카이브에서 다시 볼 수 있습니다.
+      </p>
+
+      <form class="kb-form">
+        <textarea
+          class="kb-input"
+          placeholder="지금 떠오르는 생각을 자유롭게 적어보세요."
+        ></textarea>
+        <div class="kb-form-actions">
+          <button type="submit" class="kb-save">저장</button>
+          <button type="button" class="kb-clear">지우기</button>
+          <button type="button" class="kb-delete-all">전체 삭제</button>
+        </div>
+      </form>
+
+      <div class="kb-archive">
+        <h2>Archive</h2>
+        <ul class="kb-list"></ul>
+      </div>
+    </div>
+  </div>
+
+ <!-- Window -->
+<div id="tpl-window" class="modal-template">
+  <div class="win-wrapper">
+    <div class="win-frame-box">
+      <!-- 배경 잔디밭 -->
+      <img
+        id="win-photo"
+        class="win-photo"
+        src="wd01.png"
+        alt="window scene"
+      />
+      <!-- 맨 위 고정 창문 틀 -->
+      <img
+        class="win-frame"
+        src="window_t.svg"
+        alt="window frame"
+      />
+
+      <!-- 좌우 화살표  -->
+      <button id="win-prev" class="win-arrow win-prev clickable">◀</button>
+      <button id="win-next" class="win-arrow win-next clickable">▶</button>
+    </div>
+  </div>
+</div>
+
+  <!-- Mirror -->
+<div id="tpl-mirror" class="modal-template">
+  <div class="cam-wrapper">
+    <p class="cam-sub">
+      웹캠 사용을 허용하면 이곳에 현재 모습이 비칩니다.
+    </p>
+
+    <div class="cam-video-box">
+      <video id="mirror-video" autoplay playsinline></video>
+      <div id="mirror-video-error" class="cam-error"></div>
+    </div>
+  </div>
+</div>
+
+  <!-- 페이드 레이어 -->
+  <div id="fade-layer"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
